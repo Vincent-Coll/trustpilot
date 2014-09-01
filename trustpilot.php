@@ -34,7 +34,7 @@ class TrustPilot extends Module
 	{
 		$this->name = 'trustpilot';
 		$this->tab = 'advertising_marketing';
-		$this->version = '1.2';
+		$this->version = '1.3';
 		$this->author = 'Profileo Labs';
 		$this->need_instance = 0;
 		$this->module_key = '';
@@ -387,6 +387,14 @@ class TrustPilot extends Module
 	*/
 	public function displayWidget($hook)
 	{
+		$widget1_code = Configuration::get('TRUSTPILOT_WIDGET1_CODE', null);
+		$widget2_code = Configuration::get('TRUSTPILOT_WIDGET2_CODE', null);
+		$this->context->smarty->assign(array(
+			'widget1_code' => $widget1_code,
+			'widget2_code' => $widget2_code
+		));
+	
+	
 		$widget1 = Configuration::get('TRUSTPILOT_WIDGET1_CODE', null);
 		$widget2 = Configuration::get('TRUSTPILOT_WIDGET2_CODE', null);
 
@@ -397,126 +405,24 @@ class TrustPilot extends Module
 			'widget1' => '',
 			'widget2' => ''
 		));
+		
+		// Initializing variables
+		//$widget1 = false;
+		//$widget2 = false;
 
 		/* assign widgets only if the corresponding hook has been selected in config */
 		if ($widget1 && $this->isHooked(1, $hook))
 		{
-			$tmp_tp_widget1 = $widget1;
-			
 			// Initializing variables
-			$widget1 = false;
-			$tp_wg1_id_domaine = '';
-			$tp_wg1_site_url = '';
-			$tp_wg1_domaine = '';
-			$tp_wg1_site_name = '';
-			
-			$exploded_str1 = explode('"', $tmp_tp_widget1);
-			$proceed_extraction1 = false;
-			if(isset($exploded_str1[3]) && $exploded_str1[3]!='') 
-			{
-				if(isset($exploded_str1[5]) && $exploded_str1[5]!='') 
-				{
-					if(isset($exploded_str1[8]) && $exploded_str1[8]!='') 
-					{
-						$proceed_extraction1 = true;
-					}
-				}
-			}
-			
-			if ($proceed_extraction1) 
-			{
-				$segment_1 = $exploded_str1[3]; // [3] => domainId:5349800
-				$segment_2 = $exploded_str1[5]; // [5] => http://www.trustpilot.fr/review/tolstrupbech.com
-				$segment_3 = $exploded_str1[8]; // [8] =>  hidden>Tolstrupbech Avis</a>...
-				
-				// Retrieving ID Domaine
-				$exploded_str1_1 = explode(':', $segment_1);
-				$tp_wg1_id_domaine = (int)$exploded_str1_1[1];
-				
-				// Retrieving Site URL & domain name
-				$exploded_str1_2 = explode('/', $segment_2);
-				$tp_wg1_site_url = $exploded_str1_2[2];
-				$tp_wg1_domaine = $exploded_str1_2[4];
-				
-				// Retrieving site name
-				$exploded_str1_3 = explode('>', $segment_3);
-				$exploded_str1_4 = explode('<', $exploded_str1_3[1]);
-				$tp_wg1_site_name = $exploded_str1_4[0];
-				
-				if (!empty($tp_wg1_id_domaine) &&
-						!empty($tp_wg1_site_url) &&
-						!empty($tp_wg1_domaine) &&
-						!empty($tp_wg1_site_name) )
-					$widget1 = true;
-				
-				
-			} 
-
+			$widget1 = true;
 			$this->context->smarty->assign('widget1', $widget1);
-			$this->context->smarty->assign('tp_wg1_id_domaine', $tp_wg1_id_domaine);
-			$this->context->smarty->assign('tp_wg1_site_url', $tp_wg1_site_url);
-			$this->context->smarty->assign('tp_wg1_domaine', $tp_wg1_domaine);
-			$this->context->smarty->assign('tp_wg1_site_name', $tp_wg1_site_name);
-			
 		}
                 
 		if ($widget2 && $this->isHooked(2, $hook)) 
 		{
-			$tmp_tp_widget2 = $widget2;
-			
 			// Initializing variables
-			$widget2 = false;
-			$tp_wg2_id_domaine = '';
-			$tp_wg2_site_url = '';
-			$tp_wg2_domaine = '';
-			$tp_wg2_site_name = '';
-			
-			$exploded_str2 = explode('"', $tmp_tp_widget2);
-			$proceed_extraction2 = false;
-			if(isset($exploded_str2[3]) && $exploded_str2[3]!='') 
-			{
-				if(isset($exploded_str2[5]) && $exploded_str2[5]!='') 
-				{
-					if(isset($exploded_str2[8]) && $exploded_str2[8]!='') 
-					{
-						$proceed_extraction2 = true;
-					}
-				}
-			}
-			
-			if ($proceed_extraction2) 
-			{
-				$segment_1 = $exploded_str2[3]; // [3] => domainId:5349800
-				$segment_2 = $exploded_str2[5]; // [5] => http://www.trustpilot.fr/review/tolstrupbech.com
-				$segment_3 = $exploded_str2[8]; // [8] =>  hidden>Tolstrupbech Avis</a>...
-				
-				// Retrieving ID Domaine
-				$exploded_str2_1 = explode(':', $segment_1);
-				$tp_wg2_id_domaine = (int)$exploded_str2_1[1];
-				
-				// Retrieving Site URL & domain name
-				$exploded_str2_2 = explode('/', $segment_2);
-				$tp_wg2_site_url = $exploded_str2_2[2];
-				$tp_wg2_domaine = $exploded_str2_2[4];
-				
-				// Retrieving site name
-				$exploded_str2_3 = explode('>', $segment_3);
-				$exploded_str2_4 = explode('<', $exploded_str2_3[1]);
-				$tp_wg2_site_name = $exploded_str2_4[0];
-				
-				
-				if (!empty($tp_wg2_id_domaine) &&
-						!empty($tp_wg2_site_url) &&
-						!empty($tp_wg2_domaine) &&
-						!empty($tp_wg2_site_name) )
-					$widget2 = true;
-			}
-
+			$widget2 = true;
 			$this->context->smarty->assign('widget2', $widget2);
-			$this->context->smarty->assign('tp_wg2_id_domaine', $tp_wg2_id_domaine);
-			$this->context->smarty->assign('tp_wg2_site_url', $tp_wg2_site_url);
-			$this->context->smarty->assign('tp_wg2_domaine', $tp_wg2_domaine);
-			$this->context->smarty->assign('tp_wg2_site_name', $tp_wg2_site_name);
 		}
 
 		$this->context->smarty->assign('position', $hook);
